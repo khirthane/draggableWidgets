@@ -27,10 +27,3 @@ export const fetchNews = async (
   }
   return data;
 };
-
-export const fetchStock = async (symbol: string) => {
-  const { data } = await axios.get(
-    `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEYS.STOCK_API_KEY}`
-  );
-  return data;
-};
