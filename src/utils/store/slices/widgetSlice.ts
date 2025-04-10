@@ -17,8 +17,8 @@ interface WidgetListState {
 const getInitialWidgets = (): Widget[] => {
   const items: Widget[] = [];
 
-  Object.keys(sessionStorage).forEach((key) => {
-    const data = sessionStorage.getItem(key);
+  Object.keys(localStorage).forEach((key) => {
+    const data = localStorage.getItem(key);
     if (data) {
       try {
         const widget = JSON.parse(data);
@@ -26,7 +26,7 @@ const getInitialWidgets = (): Widget[] => {
           items.push(widget);
         }
       } catch (e) {
-        console.error(`Failed to parse sessionStorage data for key: ${key}`, e);
+        console.error(`Failed to parse localStorage data for key: ${key}`, e);
       }
     }
   });
@@ -34,7 +34,7 @@ const getInitialWidgets = (): Widget[] => {
   // If no widgets found, fall back to default and persist them
   if (items.length === 0) {
     defaultWidgets.forEach((widget) => {
-      sessionStorage.setItem(widget.id, JSON.stringify(widget));
+      localStorage.setItem(widget.id, JSON.stringify(widget));
       items.push(widget);
     });
   }
@@ -90,7 +90,7 @@ const widgetSlice = createSlice({
       state.widgets = state.widgets.filter((widget) => widget.id !== widgetId);
       delete state.widgetState[widgetId];
 
-      sessionStorage.removeItem(widgetId);
+      localStorage.removeItem(widgetId);
     },
     saveWidget: (state, action: PayloadAction<{ id: string; data: any }>) => {
       const { id, data } = action.payload;
