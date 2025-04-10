@@ -12,11 +12,14 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 const Home: React.FC = () => {
   const dispatch = useDispatch();
+
   const ResponsiveGridLayout = WidthProvider(Responsive);
 
   const widgets: Widget[] = useSelector(
     (state: { widgets: { widgets: Widget[] } }) => state.widgets.widgets
   );
+
+  const layouts = React.useMemo(() => generateLayouts(widgets), [widgets]);
 
   const handleAddWidget = (widgetType: WIDGET_TYPE) => {
     const newWidget: Widget = {
@@ -32,8 +35,6 @@ const Home: React.FC = () => {
   const handleReset = () => {
     dispatch(resetWidgets());
   };
-
-  const layouts = generateLayouts(widgets);
 
   return (
     <>

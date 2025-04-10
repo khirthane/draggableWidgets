@@ -17,54 +17,52 @@ interface WidgetWrapperProps {
   children: React.ReactNode;
 }
 
-const WidgetWrapper: React.FC<WidgetWrapperProps> = ({
-  widgetId,
-  title,
-  children,
-}) => {
-  const dispatch = useDispatch();
+const WidgetWrapper: React.FC<WidgetWrapperProps> = React.memo(
+  ({ widgetId, title, children }) => {
+    const dispatch = useDispatch();
 
-  const widgetState = useSelector((state: RootState) =>
-    selectWidgetState(state, widgetId)
-  );
+    const widgetState = useSelector((state: RootState) =>
+      selectWidgetState(state, widgetId)
+    );
 
-  const { isLoading, isError, isFetching } = widgetState;
+    const { isLoading, isError, isFetching } = widgetState;
 
-  // Memoize handleDelete function to prevent unnecessary re-creations
-  const handleDelete = useCallback(() => {
-    dispatch(removeWidget(widgetId));
-  }, [dispatch, widgetId]);
+    // Memoize handleDelete function to prevent unnecessary re-creations
+    const handleDelete = useCallback(() => {
+      dispatch(removeWidget(widgetId));
+    }, [dispatch, widgetId]);
 
-  return (
-    <div className='card'>
-      <div className='flex flex-col h-full'>
-        <div className='flex items-center'>
-          <div className='drag-handle card-header'>{title}</div>
-          <div className='pr-2'>
-            <RxCross1
-              onClick={handleDelete}
-              className='text-gray-400 hover:text-gray-800 cursor-pointer'
-              title='Delete widget'
-            />
+    return (
+      <div className='card'>
+        <div className='flex flex-col h-full'>
+          <div className='flex items-center'>
+            <div className='drag-handle card-header'>{title}</div>
+            <div className='pr-2'>
+              <RxCross1
+                onClick={handleDelete}
+                className='text-gray-400 hover:text-gray-800 cursor-pointer'
+                title='Delete widget'
+              />
+            </div>
           </div>
+
+          {isLoading || isFetching ? (
+            <div className='flex-1 flex items-center justify-center text-gray-500'>
+              Loading...
+            </div>
+          ) : isError ? (
+            <div className='flex-1 flex items-center justify-center text-red-500'>
+              Error fetching data
+            </div>
+          ) : (
+            <div className='flex-1 overflow-y-auto p-4 custom-scrollbar'>
+              {children}
+            </div>
+          )}
         </div>
-
-        {isLoading || isFetching ? (
-          <div className='flex-1 flex items-center justify-center text-gray-500'>
-            Loading...
-          </div>
-        ) : isError ? (
-          <div className='flex-1 flex items-center justify-center text-red-500'>
-            Error fetching data
-          </div>
-        ) : (
-          <div className='flex-1 overflow-y-auto p-4 custom-scrollbar'>
-            {children}
-          </div>
-        )}
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default WidgetWrapper;
